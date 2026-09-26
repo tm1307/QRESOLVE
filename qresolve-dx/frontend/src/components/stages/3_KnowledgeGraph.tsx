@@ -51,6 +51,10 @@ export const KnowledgeGraph = () => {
       .force('link', d3.forceLink(linksCopy).id((d: any) => d.id).distance(130))
       .force('charge', d3.forceManyBody().strength(-650))
       .force('center', d3.forceCenter(400, 250))
+      .force('collision', d3.forceCollide().radius((d: any) => {
+        // ERR-07 fix: collision radius based on node type + label padding
+        return d.group === 'disease' ? 40 : 28;
+      }).strength(0.9))
       .on('tick', () => {
         setNodes([...nodesCopy as any]);
         setLinks([...linksCopy]);

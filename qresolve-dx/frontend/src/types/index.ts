@@ -20,6 +20,30 @@ export type DiagnoseResponse = {
   runner_up: string;
 };
 
+// ERR-03 / ACTION C: Dedicated quantum escalation types
+export type QuantumEscalateRequest = {
+  case_id: string;
+  top_diagnosis: string;
+  runner_up: string;
+};
+
+export type QuantumEscalateResponse = {
+  case_id: string;
+  quantum_status: string;
+  ranked_diagnoses: DiagnosisResult[];
+  confidence: number;
+  top_diagnosis: string;
+  runner_up: string;
+  circuit_metrics?: {
+    n_qubits: number;
+    kernel_type: string;
+    entanglement: string;
+    reps: number;
+    computation_time_s: number;
+    pre_trained: boolean;
+  };
+};
+
 export type EvidenceItem = {
   hpo_id: string;
   label: string;

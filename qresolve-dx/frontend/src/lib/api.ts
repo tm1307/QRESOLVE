@@ -4,6 +4,7 @@ import type {
   BreastCancerRequest, ParkinsonsRequest, CommonDiseaseResponse,
   FeatureMetadata, ScanAnalysisResponse, MammogramAnalysisResult,
   EhrExtractionResult, AbhaBeneficiarySummary, AbhaPatientProfile,
+  QuantumEscalateRequest, QuantumEscalateResponse,
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -99,6 +100,17 @@ export const api = {
    */
   getBenchmarkReport: async (): Promise<any> => {
     return request<any>(`${API_BASE_URL}/benchmark/report`);
+  },
+
+  /**
+   * ERR-03 / ACTION C: Live quantum escalation — replaces frontend setTimeout mockup
+   */
+  quantumEscalate: async (req: QuantumEscalateRequest): Promise<QuantumEscalateResponse> => {
+    return request<QuantumEscalateResponse>(`${API_BASE_URL}/quantum/escalate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req),
+    });
   },
 
   /**

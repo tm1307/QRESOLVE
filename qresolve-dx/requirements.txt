@@ -24,6 +24,8 @@ statsmodels>=0.14,<1.0
 # Backend
 fastapi>=0.110,<1.0
 uvicorn>=0.27,<1.0
+python-multipart>=0.0.9
+reportlab>=4.0.0
 
 # NLP (optional — for free-text symptom extraction)
 # spacy>=3.7,<4.0

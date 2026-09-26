@@ -1,13 +1,42 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
+import { api } from '../../lib/api';
+import type { ExplainResponse } from '../../types';
 
 export const NextTestRecommendation = () => {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const explainData = location.state?.explainData;
+  const [explainData, setExplainData] = useState<ExplainResponse | null>(location.state?.explainData || null);
+  const [isLoading, setIsLoading] = useState(!location.state?.explainData);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!explainData) return <div className="p-8">No explain data available. <Button onClick={() => navigate(-1)}>Go Back</Button></div>;
+  useEffect(() => {
+    if (explainData) return;
+    if (!id || id === 'new') {
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchExplain = async () => {
+      try {
+        const data = await api.explain(id);
+        setExplainData(data);
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch test recommendations');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchExplain();
+  }, [id, explainData]);
+
+  if (isLoading) return <div className="p-8 text-ink-muted font-serif">Loading test recommendations...</div>;
+  if (error) return <div className="p-8 text-red-600 bg-red-50">Error: {error}</div>;
+  if (!explainData) return <div className="p-8">No test recommendations available. <Button onClick={() => navigate('/')}>Return to Dashboard</Button></div>;
 
   return (
     <div className="space-y-6 animate-fade-in max-w-3xl">

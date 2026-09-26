@@ -20,6 +20,15 @@ from __future__ import annotations
 
 import sys
 import os
+
+# Fix Windows console encoding for Unicode box characters
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 import json
 import time
 import pickle
@@ -386,6 +395,24 @@ def phase4_quantum_resolver(X_hard, y_hard):
         benchmark['quantum_f1'] = q_metrics['macro_f1']
         benchmark['quantum_accuracy'] = q_metrics['accuracy']
         benchmark['mcnemar_p_value'] = benchmark.get('p_value', 1.0)
+
+        # ERR-04 / ACTION B: Persist QSVM model and support data to disk
+        # so the backend can load them at startup instead of retraining live.
+        qsvm_artifact = {
+            'qsvm_model': qsvm,
+            'X_train': X_train,
+            'y_train': y_train,
+            'selected_indices': selected_idx,
+            'n_qubits': n_qubits,
+            'X_min': np.min(X_reduced, axis=0),
+            'X_max': np.max(X_reduced, axis=0),
+        }
+        qsvm_path = os.path.join(PROJECT_ROOT, 'data', 'processed', 'qsvm_model.pkl')
+        with open(qsvm_path, 'wb') as f:
+            pickle.dump(qsvm_artifact, f)
+        print(f"\n  ✓ Saved QSVM model artifact to {qsvm_path}")
+        print(f"    Contains: model, {len(X_train)} support vectors, "
+              f"{len(selected_idx)} selected features, normalization params")
 
         return benchmark
 

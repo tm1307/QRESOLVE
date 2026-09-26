@@ -536,15 +536,15 @@ def analyze_scan_detailed(
             "clinical_evidence": "Medial migration of the femoral head crossing Kohler line by > 3mm.",
         })
 
-    # Fallback to default chest radiograph
+    # Fallback for unrecognized / healthy scans
     if not detected:
         detected.append({
-            "hpo_id": "HP:0000768",
-            "label": "Pectus excavatum",
-            "confidence": 0.88,
-            "modality": "Chest Radiograph (X-Ray / CT)",
-            "anatomical_region": "Thoracic Wall",
-            "clinical_evidence": "Extracted radiomic attenuation profile matches anterior thoracic wall depression (Pectus excavatum).",
+            "hpo_id": "HP:0000001",
+            "label": "No specific pathology detected",
+            "confidence": 0.99,
+            "modality": "General Radiographic Scan",
+            "anatomical_region": "Unspecified",
+            "clinical_evidence": f"Radiomic profile (Entropy: {metrics['entropy']:.2f}) is unremarkable. No known rare disease patterns matched.",
         })
 
     modality = detected[0]["modality"] if detected else "General Radiographic Scan"

@@ -1,24 +1,29 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { api } from '../../lib/api';
 import type { ExplainResponse } from '../../types';
 
 export const ExplainableOutput = () => {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const triageResult = location.state?.triageResult;
+  const caseId = triageResult?.case_id || id;
   const [explainData, setExplainData] = useState<ExplainResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!triageResult) return;
+    if (!caseId || caseId === 'new') {
+      setIsLoading(false);
+      return;
+    }
     
     const fetchExplain = async () => {
       try {
-        const data = await api.explain(triageResult.case_id);
+        const data = await api.explain(caseId);
         setExplainData(data);
       } catch (err: any) {
         setError(err.message);
@@ -28,14 +33,16 @@ export const ExplainableOutput = () => {
     };
     
     fetchExplain();
-  }, [triageResult]);
+  }, [caseId]);
 
-  if (!triageResult) return <div className="p-8">No case data found. <Button onClick={() => navigate(-1)}>Go Back</Button></div>;
+  if (!caseId || caseId === 'new') {
+    return <div className="p-8">No case data found. <Button onClick={() => navigate('/')}>Return to Dashboard</Button></div>;
+  }
   if (isLoading) return <div className="p-8 text-ink-muted font-serif">Loading SHAP explanations...</div>;
   if (error) return <div className="p-8 text-red-600 bg-red-50">Error fetching explanation: {error}</div>;
   if (!explainData) return null;
 
-  const isQuantum = triageResult.quantum_used;
+  const isQuantum = triageResult?.quantum_used ?? false;
   
   // Calculate max SHAP value for scaling bars
   const allEvidences = [...explainData.supporting_evidence, ...explainData.against_evidence];

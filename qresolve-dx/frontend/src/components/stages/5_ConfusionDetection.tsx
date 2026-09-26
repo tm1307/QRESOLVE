@@ -3,23 +3,37 @@ import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
 import { useState } from 'react';
+import { api } from '../../lib/api';
 
 export const ConfusionDetection = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const triageResult = location.state?.triageResult;
   const [isEscalating, setIsEscalating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!triageResult || !triageResult.is_hard_case) {
     return <div className="p-8">No confusion detected for this case. <Button onClick={() => navigate(-1)}>Go Back</Button></div>;
   }
 
-  const handleEscalate = () => {
+  // ERR-03 / ACTION C: Replace setTimeout(1500) mockup with real
+  // POST /quantum/escalate API call that triggers live QSVM computation.
+  const handleEscalate = async () => {
     setIsEscalating(true);
-    // Simulate quantum escalation time then navigate to quantum view
-    setTimeout(() => {
-      navigate(`/case/${triageResult.case_id}/quantum`, { state: { triageResult } });
-    }, 1500);
+    setError(null);
+    try {
+      const quantumResult = await api.quantumEscalate({
+        case_id: triageResult.case_id,
+        top_diagnosis: triageResult.top_diagnosis,
+        runner_up: triageResult.runner_up,
+      });
+      navigate(`/case/${triageResult.case_id}/quantum`, {
+        state: { triageResult: { ...triageResult, ...quantumResult, quantum_used: true } },
+      });
+    } catch (err: any) {
+      setError(err.message || 'Quantum escalation failed');
+      setIsEscalating(false);
+    }
   };
 
   return (
@@ -56,10 +70,16 @@ export const ConfusionDetection = () => {
         </p>
       </Card>
 
+      {error && (
+        <Card className="p-4 border-l-4 border-l-red-500 bg-red-50 text-sm text-red-800">
+          <strong>Quantum Escalation Error:</strong> {error}
+        </Card>
+      )}
+
       <div className="flex justify-between items-center pt-4">
         <Button variant="outline" onClick={() => navigate(-1)}>← Back</Button>
         <Button onClick={handleEscalate} variant="quantum" disabled={isEscalating}>
-          {isEscalating ? 'Initializing QSVM Kernel...' : 'Escalate to Quantum Resolver →'}
+          {isEscalating ? 'Computing QSVM Kernel...' : 'Escalate to Quantum Resolver →'}
         </Button>
       </div>
     </div>

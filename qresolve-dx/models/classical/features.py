@@ -15,7 +15,14 @@ from data.disease_data import (
     DISEASE_NAMES, DISEASE_LABEL_MAP, HPO_TERMS
 )
 
-# Approximate HPO parent map to enable simplified Lin similarity without the full DAG
+# Approximate HPO parent map to enable simplified Lin similarity without the full DAG.
+#
+# LIMITATION (ERR-05): This flat parent mapping only captures one level of the
+# HPO hierarchy. Deep phenotypic sub-categories (e.g., HP:0001083 "Ectopia lentis"
+# → HP:0012372 "Abnormal eye morphology" → HP:0000478 "Abnormality of the eye")
+# are collapsed to a single parent, which can cause slight semantic distortion.
+# Full DAG traversal requires the `pyhpo` dependency. When `pyhpo` is installed,
+# `compute_lin_similarity_full_dag()` below will be used automatically instead.
 HPO_PARENT_MAP = {
     # Abnormality of the eye (HP:0000478)
     "HP:0000486": "HP:0000478",
@@ -193,6 +200,56 @@ def compute_lin_similarity(t1: str, t2: str, ic_values: Dict[str, float]) -> flo
         return 2.0 * mica_ic / (ic_t1 + ic_t2)
         
     return 0.0
+
+
+def compute_lin_similarity_full_dag(t1: str, t2: str, ic_values: Dict[str, float]) -> float:
+    """
+    Lin's semantic similarity using the full HPO DAG via pyhpo.
+
+    Falls back to the flat-parent approximation if pyhpo is not installed.
+    This resolves ERR-05 by traversing the complete ontology graph to find
+    the true Most Informative Common Ancestor (MICA).
+    """
+    if t1 == t2:
+        return 1.0
+
+    try:
+        from pyhpo import Ontology
+        Ontology()
+
+        hpo_t1 = Ontology.get_hpo_object(t1)
+        hpo_t2 = Ontology.get_hpo_object(t2)
+
+        # Find common ancestors via full DAG traversal
+        common_ancestors = hpo_t1.common_ancestors(hpo_t2)
+        if not common_ancestors:
+            return 0.0
+
+        # MICA = ancestor with highest IC
+        mica_ic = max(ic_values.get(str(a), 0.0) for a in common_ancestors)
+
+        ic_t1 = ic_values.get(t1, 0.0)
+        ic_t2 = ic_values.get(t2, 0.0)
+
+        if ic_t1 + ic_t2 == 0:
+            return 0.0
+
+        return 2.0 * mica_ic / (ic_t1 + ic_t2)
+    except (ImportError, Exception):
+        # pyhpo not available — fall back to flat parent map approximation
+        return compute_lin_similarity(t1, t2, ic_values)
+
+
+def lin_similarity(t1: str, t2: str, ic_values: Dict[str, float]) -> float:
+    """
+    Smart dispatcher: uses full DAG traversal if pyhpo is available,
+    otherwise uses the flat-parent approximation.
+    """
+    try:
+        import pyhpo  # noqa: F401
+        return compute_lin_similarity_full_dag(t1, t2, ic_values)
+    except ImportError:
+        return compute_lin_similarity(t1, t2, ic_values)
 
 
 def build_ic_weighted_features(patient_hpo_terms: List[str], ic_values: Dict[str, float]) -> np.ndarray:

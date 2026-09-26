@@ -18,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<DoctorDashboard />} />
         
+        <Route path="/common/breast-cancer" element={<Navigate to="/common/breast_cancer" replace />} />
         <Route path="/common/breast_cancer" element={
           <div className="min-h-screen bg-bg">
             <header className="border-b border-border bg-surface px-8 py-6 flex justify-between items-center">

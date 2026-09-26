@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T00:40:23.308340",
+  "generated": "2026-09-25T21:54:02.334923",
   "classical_cv": {
     "n_splits": 5,
     "folds": [
@@ -7,15 +7,15 @@
         "fold": 1,
         "accuracy": 1.0,
         "macro_f1": 1.0,
-        "log_loss": 0.01656632497906685,
+        "log_loss": 0.016494518145918846,
         "n_train": 800,
         "n_val": 200
       },
       {
         "fold": 2,
-        "accuracy": 0.995,
-        "macro_f1": 0.9949992186279106,
-        "log_loss": 0.03440329059958458,
+        "accuracy": 0.99,
+        "macro_f1": 0.9899984372558212,
+        "log_loss": 0.03255835548043251,
         "n_train": 800,
         "n_val": 200
       },
@@ -23,7 +23,7 @@
         "fold": 3,
         "accuracy": 0.995,
         "macro_f1": 0.9949992186279106,
-        "log_loss": 0.030003497377038002,
+        "log_loss": 0.030778056010603905,
         "n_train": 800,
         "n_val": 200
       },
@@ -31,7 +31,7 @@
         "fold": 4,
         "accuracy": 1.0,
         "macro_f1": 1.0,
-        "log_loss": 0.027192607522010803,
+        "log_loss": 0.028076954185962677,
         "n_train": 800,
         "n_val": 200
       },
@@ -39,14 +39,14 @@
         "fold": 5,
         "accuracy": 0.995,
         "macro_f1": 0.9949992186279106,
-        "log_loss": 0.035191938281059265,
+        "log_loss": 0.03606029972434044,
         "n_train": 800,
         "n_val": 200
       }
     ],
-    "overall_accuracy": 0.997,
-    "overall_macro_f1": 0.9969998312405073,
-    "overall_log_loss": 0.02867153104061926,
+    "overall_accuracy": 0.996,
+    "overall_macro_f1": 0.9959998249904682,
+    "overall_log_loss": 0.028793636913130652,
     "confusion_matrix": [
       [
         197,
@@ -72,8 +72,8 @@
       [
         0,
         0,
-        0,
-        200,
+        1,
+        199,
         0
       ],
       [
@@ -88,45 +88,45 @@
   "calibration": {
     "method": "isotonic",
     "cv_folds": 5,
-    "calibrated_log_loss": 0.0004397100891340871,
-    "uncalibrated_log_loss": 0.015330398455262184,
+    "calibrated_log_loss": 0.0005144671205227665,
+    "uncalibrated_log_loss": 0.015596969053149223,
     "per_class": {
       "Marfan syndrome": {
-        "brier_uncalibrated": 0.0005283751524984837,
-        "brier_calibrated": 7.106323953604782e-06
+        "brier_uncalibrated": 0.0005780239589512348,
+        "brier_calibrated": 9.546585488032668e-06
       },
       "Loeys-Dietz syndrome": {
-        "brier_uncalibrated": 0.00014761817874386907,
-        "brier_calibrated": 8.743664376324484e-06
+        "brier_uncalibrated": 0.00015397915558423847,
+        "brier_calibrated": 1.3207670956378379e-05
       },
       "Beals syndrome": {
-        "brier_uncalibrated": 0.00010142790415557101,
-        "brier_calibrated": 1.0088455632272585e-05
+        "brier_uncalibrated": 9.304554987465963e-05,
+        "brier_calibrated": 9.501553717643781e-06
       },
       "Shprintzen-Goldberg syndrome": {
-        "brier_uncalibrated": 0.00014074200589675456,
-        "brier_calibrated": 1.0567713690434881e-05
+        "brier_uncalibrated": 0.00014830767759121954,
+        "brier_calibrated": 1.0082437483234266e-05
       },
       "MASS phenotype": {
-        "brier_uncalibrated": 0.0005289966939017177,
-        "brier_calibrated": 1.3885775878460933e-05
+        "brier_uncalibrated": 0.0005687818629667163,
+        "brier_calibrated": 1.9929524527853577e-05
       }
     }
   },
   "confusion_detection": {
     "n_total": 1000,
-    "n_hard": 214,
-    "n_easy": 786,
-    "hard_rate": 0.214,
+    "n_hard": 212,
+    "n_easy": 788,
+    "hard_rate": 0.212,
     "margin_tau": 0.03,
     "entropy_tau": 0.8,
     "trigger_breakdown": {
-      "known_pair": 214,
-      "none": 786
+      "known_pair": 212,
+      "none": 788
     },
     "top_confusion_pairs": {
       "Marfan syndrome \u2194 MASS phenotype": 198,
-      "Shprintzen-Goldberg syndrome \u2194 Beals syndrome": 7,
+      "Shprintzen-Goldberg syndrome \u2194 Beals syndrome": 5,
       "Shprintzen-Goldberg syndrome \u2194 Loeys-Dietz syndrome": 3,
       "Loeys-Dietz syndrome \u2194 Shprintzen-Goldberg syndrome": 2,
       "Marfan syndrome \u2194 Loeys-Dietz syndrome": 1,
@@ -139,11 +139,11 @@
   },
   "quantum_benchmark": {
     "classical_accuracy": 0.9761904761904762,
-    "classical_macro_f1": 0.6624472573839663,
-    "quantum_accuracy": 0.9523809523809523,
+    "classical_macro_f1": 0.5555555555555555,
+    "quantum_accuracy": 0.9761904761904762,
     "p_value": 1.0,
     "conclusion": "No significant difference",
-    "quantum_f1": 0.5914529914529915,
+    "quantum_f1": 0.5555555555555555,
     "mcnemar_p_value": 1.0
   }
 }

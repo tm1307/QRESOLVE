@@ -10,6 +10,8 @@ export const QuantumResolver = () => {
 
   if (!triageResult) return null;
 
+  const metrics = triageResult.circuit_metrics;
+
   return (
     <div className="space-y-6 animate-fade-in max-w-3xl">
       <div>
@@ -23,7 +25,9 @@ export const QuantumResolver = () => {
       <Card className="p-0 border-t-4 border-quantum overflow-hidden shadow-[0_8px_30px_rgba(14,165,160,0.12)]">
         <div className="bg-quantum-soft border-b border-border px-6 py-4 flex justify-between items-center">
           <h3 className="text-sm font-semibold text-quantum-text uppercase tracking-wide">Quantum Margin Separation</h3>
-          <span className="text-xs font-mono text-quantum-text/80">Kernel: ZZFeatureMap (3 qubits)</span>
+          <span className="text-xs font-mono text-quantum-text/80">
+            Kernel: {metrics?.kernel_type || 'ZZFeatureMap'} ({metrics?.n_qubits || 8} qubits)
+          </span>
         </div>
         
         <div className="p-10 text-center bg-surface">
@@ -35,6 +39,30 @@ export const QuantumResolver = () => {
             <span className="bg-gray-50 px-3 py-1 border border-border">Status: {triageResult.quantum_status}</span>
           </div>
         </div>
+
+        {/* Circuit metrics telemetry — only shown when real quantum computation ran */}
+        {metrics && (
+          <div className="border-t border-border px-6 py-4 bg-quantum-soft/30">
+            <div className="text-xs text-ink-muted uppercase tracking-wider font-semibold mb-3">Circuit Telemetry</div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-semibold text-quantum-text">{metrics.n_qubits}</div>
+                <div className="text-xs text-ink-muted mt-1">Qubits</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-semibold text-quantum-text">{metrics.reps}</div>
+                <div className="text-xs text-ink-muted mt-1">Circuit Reps</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-semibold text-quantum-text">{metrics.computation_time_s}s</div>
+                <div className="text-xs text-ink-muted mt-1">Kernel Time</div>
+              </div>
+            </div>
+            <div className="mt-3 text-center text-xs text-ink-muted">
+              Entanglement: {metrics.entanglement} • {metrics.pre_trained ? 'Pre-trained QSVM' : 'Live-trained QSVM'}
+            </div>
+          </div>
+        )}
       </Card>
 
       <div className="flex justify-between items-center pt-4">

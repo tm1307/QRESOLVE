@@ -226,7 +226,7 @@ def save_report(report_text: str, output_dir: str) -> str:
     """Save report as markdown and return the path."""
     os.makedirs(output_dir, exist_ok=True)
     path = os.path.join(output_dir, "benchmark_report.md")
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(report_text)
     print(f"\n  Benchmark report saved to: {path}")
     return path

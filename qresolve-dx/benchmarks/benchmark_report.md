@@ -1,6 +1,6 @@
 # QResolve-Dx Benchmark Report
 
-**Generated:** 2026-09-16 00:40:23
+**Generated:** 2026-09-25 21:54:02
 **Diseases:** Marfan syndrome, Loeys-Dietz syndrome, Beals syndrome, Shprintzen-Goldberg syndrome, MASS phenotype
 
 ## ⚠️ Data Disclosure
@@ -15,19 +15,19 @@
 ## 1. Classical Pipeline (XGBoost)
 
 - **Cross-validation:** Stratified 5-fold
-- **Overall Accuracy (OOF):** 0.9970
-- **Overall Macro-F1 (OOF):** 0.9970
-- **Overall Log-Loss (OOF):** 0.0287
+- **Overall Accuracy (OOF):** 0.9960
+- **Overall Macro-F1 (OOF):** 0.9960
+- **Overall Log-Loss (OOF):** 0.0288
 
 ### Per-Fold Results
 
 | Fold | Accuracy | Macro-F1 | Log-Loss |
 |------|----------|----------|----------|
-| 1 | 1.0000 | 1.0000 | 0.0166 |
-| 2 | 0.9950 | 0.9950 | 0.0344 |
-| 3 | 0.9950 | 0.9950 | 0.0300 |
-| 4 | 1.0000 | 1.0000 | 0.0272 |
-| 5 | 0.9950 | 0.9950 | 0.0352 |
+| 1 | 1.0000 | 1.0000 | 0.0165 |
+| 2 | 0.9900 | 0.9900 | 0.0326 |
+| 3 | 0.9950 | 0.9950 | 0.0308 |
+| 4 | 1.0000 | 1.0000 | 0.0281 |
+| 5 | 0.9950 | 0.9950 | 0.0361 |
 
 ### Confusion Matrix
 
@@ -36,31 +36,31 @@
 | **Marfan syndr** | 197 | 0 | 0 | 0 | 3 |
 | **Loeys-Dietz ** | 0 | 200 | 0 | 0 | 0 |
 | **Beals syndro** | 0 | 0 | 200 | 0 | 0 |
-| **Shprintzen-G** | 0 | 0 | 0 | 200 | 0 |
+| **Shprintzen-G** | 0 | 0 | 1 | 199 | 0 |
 | **MASS phenoty** | 0 | 0 | 0 | 0 | 200 |
 
 ## 2. Probability Calibration
 
 - **Method:** isotonic
-- **Uncalibrated Log-Loss:** 0.0153
-- **Calibrated Log-Loss:** 0.0004
-- **Improvement:** +0.0149
+- **Uncalibrated Log-Loss:** 0.0156
+- **Calibrated Log-Loss:** 0.0005
+- **Improvement:** +0.0151
 
 ### Per-Class Brier Scores
 
 | Disease | Uncalibrated | Calibrated | Improved? |
 |---------|-------------|------------|-----------|
-| Marfan syndrome | 0.0005 | 0.0000 | ✓ |
-| Loeys-Dietz syndrome | 0.0001 | 0.0000 | ✓ |
+| Marfan syndrome | 0.0006 | 0.0000 | ✓ |
+| Loeys-Dietz syndrome | 0.0002 | 0.0000 | ✓ |
 | Beals syndrome | 0.0001 | 0.0000 | ✓ |
 | Shprintzen-Goldberg syndr | 0.0001 | 0.0000 | ✓ |
-| MASS phenotype | 0.0005 | 0.0000 | ✓ |
+| MASS phenotype | 0.0006 | 0.0000 | ✓ |
 
 ## 3. Confusion Detection
 
 - **Total cases:** 1000
-- **Hard cases:** 214 (21.4%)
-- **Easy cases:** 786
+- **Hard cases:** 212 (21.2%)
+- **Easy cases:** 788
 - **Margin τ:** 0.030
 - **Entropy τ:** 0.800
 - **Hard-case accuracy (before quantum):** 1.0000
@@ -68,15 +68,15 @@
 
 ### Trigger Breakdown
 
-- **known_pair:** 214
-- **none:** 786
+- **known_pair:** 212
+- **none:** 788
 
 ### Most Confused Disease Pairs
 
 | Pair | Count |
 |------|-------|
 | Marfan syndrome ↔ MASS phenotype | 198 |
-| Shprintzen-Goldberg syndrome ↔ Beals syndrome | 7 |
+| Shprintzen-Goldberg syndrome ↔ Beals syndrome | 5 |
 | Shprintzen-Goldberg syndrome ↔ Loeys-Dietz syndrome | 3 |
 | Loeys-Dietz syndrome ↔ Shprintzen-Goldberg syndrome | 2 |
 | Marfan syndrome ↔ Loeys-Dietz syndrome | 1 |
@@ -90,8 +90,8 @@
 
 | Metric | Quantum QSVM | Classical RBF-SVM |
 |--------|-------------|-------------------|
-| Accuracy | 0.9524 | 0.9762 |
-| Macro-F1 | 0.5915 | 0.0000 |
+| Accuracy | 0.9762 | 0.9762 |
+| Macro-F1 | 0.5556 | 0.0000 |
 
 ### Statistical Significance (McNemar's Test)
 
@@ -109,10 +109,10 @@
 
 | Component | Status | Key Metric |
 |-----------|--------|------------|
-| Classical XGBoost | ✓ | F1 = 0.9970 |
-| Calibration | ✓ | ΔLogLoss = +0.0149 |
-| Confusion Detection | ✓ | 21.4% hard |
-| Quantum QSVM | ✓ | F1 = 0.5915 |
+| Classical XGBoost | ✓ | F1 = 0.9960 |
+| Calibration | ✓ | ΔLogLoss = +0.0151 |
+| Confusion Detection | ✓ | 21.2% hard |
+| Quantum QSVM | ✓ | F1 = 0.5556 |
 | McNemar's Test | ✓ | p = 1.0 |
 
 ## 6. Common Disease Classifiers (Real Data)
@@ -120,11 +120,11 @@
 ### Breast Cancer (Wisconsin Dataset — 569 real patients)
 - **Accuracy:** 0.9508
 - **Macro-F1:** 0.9613
-- **AUC-ROC:** 0.9920
+- **AUC-ROC:** 0.9923
 - **Data:** REAL (sklearn.datasets.load_breast_cancer)
 
 ### Parkinson's Disease (Voice Measurements)
-- **Accuracy:** 0.9385
-- **Macro-F1:** 0.9602
-- **AUC-ROC:** 0.9744
+- **Accuracy:** 0.9333
+- **Macro-F1:** 0.9561
+- **AUC-ROC:** 0.9751
 

@@ -67,7 +67,7 @@ export const DoctorDashboard = () => {
   const proceedWithScan = () => {
     if (!scanResult) return;
     if (scanResult.breast_cancer_diagnosis) {
-      navigate('/common/breast-cancer');
+      navigate('/common/breast_cancer');
       return;
     }
     const findingsText = scanResult.findings
